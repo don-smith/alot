@@ -27,7 +27,7 @@ export default defineComponent({
       const getGreeting = async () => {
         const appConnection = await AppWebsocket.connect("ws://localhost:8888");
         const appInfo = await appConnection.appInfo({
-          installed_app_id: "greeter-app",
+          installed_app_id: "alot-app",
         });
         const cellId = appInfo.cell_data[0].cell_id;
 
