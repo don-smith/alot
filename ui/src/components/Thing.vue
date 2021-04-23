@@ -3,7 +3,7 @@
     <h1>Add a new thing</h1>
     <form @submit="handleSubmit">
       <input type="text" name="name" v-model="thingName">
-      <button>Say hello</button>
+      <button>Add</button>
     </form>
   </div>
 </template>
