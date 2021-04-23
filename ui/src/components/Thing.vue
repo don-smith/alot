@@ -35,7 +35,7 @@ export default defineComponent({
         const headerHash = await appConnection.callZome({
           cap: null,
           cell_id: cellId,
-          zome_name: "greeter",
+          zome_name: "thing",
           fn_name: "add_thing",
           provenance: cellId[1],
           payload: { name: this.thingName },

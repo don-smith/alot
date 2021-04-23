@@ -1,14 +1,14 @@
 ---
 manifest_version: "1"
-name: tutorial
-description: Tutorial hApp
+name: alot
+description: A Library of Things hApp
 slots:
-  - id: sample-slot
+  - id: create-thing-slot
     provisioning:
       strategy: create
       deferred: false
     dna:
-      bundled: "../dna/greeter.dna"
+      bundled: "../dna/thing.dna"
       properties: ~
       uuid: ~
       version: ~

@@ -143,14 +143,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "greeter"
-version = "0.0.1"
-dependencies = [
- "hdk",
- "serde",
-]
-
-[[package]]
 name = "hashbrown"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -626,6 +618,14 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-xid",
+]
+
+[[package]]
+name = "thing"
+version = "0.0.1"
+dependencies = [
+ "hdk",
+ "serde",
 ]
 
 [[package]]

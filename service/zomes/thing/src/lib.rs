@@ -3,20 +3,52 @@ use hdk::prelude::*;
 //
 // add_thing
 //
-entry_defs![ThingEntry::entry_def()];
+entry_defs![Thing::entry_def()];
 
 #[hdk_entry(id = "thing")]
-pub struct ThingEntry {
+pub struct Thing {
     name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct NewThing {
+pub struct ThingInput {
     name: String,
 }
 
 #[hdk_extern]
-pub fn add_thing(new_thing: NewThing) -> ExternResult<HeaderHash> {
-    let new_entry: ThingEntry = ThingEntry { name: new_thing.name };
-    create_entry(new_entry)
+pub fn add_thing(thing_input: ThingInput) -> ExternResult<EntryHash> {
+    let new_thing = Thing { name: thing_input.name };
+
+    create_entry(&new_thing)?;
+    let thing_entry_hash = hash_entry(&new_thing)?;
+
+    create_link(
+        agent_info()?.agent_latest_pubkey.into(),
+        thing_entry_hash.clone(),
+        (),
+    )?;
+
+    Ok(thing_entry_hash.clone())
+}
+
+#[hdk_extern]
+pub fn get_things_for_agent(agent_pubkey: AgentPubKey) -> ExternResult<Vec<Thing>> {
+    let mut things: Vec<Thing> = Vec::new();
+
+    let links = get_links(agent_pubkey.into(), None)?;
+
+    for link in links.into_inner() {
+        things.push(_get_thing(link)?);
+    }
+
+    Ok(things)
+}
+
+fn _get_thing(link: Link) -> ExternResult<Thing> {
+    let element: Element = get(link.target, GetOptions::default())?
+        .ok_or(WasmError::Guest(String::from("Entry not found")))?;
+    let thing_option: Option<Thing> = element.entry().to_app_option()?;
+    let thing: Thing =
+        thing_option.ok_or(WasmError::Guest("The targeted entry is not a thing".into()))?;
+    Ok(thing)
 }
