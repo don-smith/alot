@@ -1,14 +1,6 @@
 use hdk::prelude::*;
 
 //
-// hello
-//
-#[hdk_extern]
-pub fn hello(_: ()) -> ExternResult<String> {
-    Ok(String::from("Hello Holo Dev"))
-}
-
-//
 // add_thing
 //
 entry_defs![ThingEntry::entry_def()];

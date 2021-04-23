@@ -1,11 +1,11 @@
 [package]
-name = "greeter"
+name = "thing"
 version = "0.0.1"
 authors = [ "Don", "hi@dons.dev" ]
 edition = "2018"
 
 [lib]
-name = "greeter"
+name = "thing"
 crate-type = [ "cdylib", "rlib" ]
 
 [dependencies]

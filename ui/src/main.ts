@@ -1,3 +1,4 @@
+// import devtools from "@vue/devtools";
 import { Buffer } from "buffer";
 import { createApp } from "vue";
 import App from "./App.vue";
@@ -8,3 +9,7 @@ const MainWindow = window as any;
 MainWindow.Buffer = Buffer;
 
 createApp(App).mount("#app");
+
+// if (process.env.NODE_ENV === "development") {
+//   devtools.connect([> host, port <]);
+// }

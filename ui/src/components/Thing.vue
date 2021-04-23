@@ -1,10 +1,10 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-  </div>
-  <div>
-    <button @click="handleClick">Say hello</button>
-    <p>{{ greeting }}</p>
+    <h1>Add a new thing</h1>
+    <form @submit="handleSubmit">
+      <input type="text" name="name" v-model="thingName">
+      <button>Say hello</button>
+    </form>
   </div>
 </template>
 
@@ -13,37 +13,38 @@ import { defineComponent } from "vue";
 import { AppWebsocket } from "@holochain/conductor-api";
 
 export default defineComponent({
-  name: "Greeter",
+  name: "Thing",
   props: {
     msg: String,
   },
   data() {
     return {
-      greeting: "",
+      thingName: "",
     };
   },
   methods: {
-    handleClick() {
-      const getGreeting = async () => {
+    handleSubmit(e: Event) {
+      e.preventDefault();
+      const addNewThing = async () => {
         const appConnection = await AppWebsocket.connect("ws://localhost:8888");
         const appInfo = await appConnection.appInfo({
           installed_app_id: "alot-app",
         });
         const cellId = appInfo.cell_data[0].cell_id;
 
-        const message = await appConnection.callZome({
+        const headerHash = await appConnection.callZome({
           cap: null,
           cell_id: cellId,
           zome_name: "greeter",
-          fn_name: "hello",
+          fn_name: "add_thing",
           provenance: cellId[1],
-          payload: null,
+          payload: { name: this.thingName },
         });
 
-        this.greeting = `👋 ${message} 👋`;
+        console.log("headerHash:", headerHash);
       };
 
-      getGreeting();
+      addNewThing();
     },
   },
 });

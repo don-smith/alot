@@ -1,16 +1,16 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png" />
-  <Greeter msg="Welcome to Your Vue.js + TypeScript App" />
+  <Thing />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Greeter from "./components/Greeter.vue";
+import Thing from "./components/Thing.vue";
 
 export default defineComponent({
   name: "App",
   components: {
-    Greeter,
+    Thing,
   },
 });
 </script>
