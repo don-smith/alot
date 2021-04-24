@@ -16,8 +16,8 @@ pub struct ThingInput {
 }
 
 #[hdk_extern]
-pub fn add_thing(thing_input: ThingInput) -> ExternResult<EntryHash> {
-    let new_thing = Thing { name: thing_input.name };
+pub fn add_thing(thing_input: ThingInput) -> ExternResult<Thing> {
+    let new_thing = Thing { name: thing_input.name.clone() };
 
     create_entry(&new_thing)?;
     let thing_entry_hash = hash_entry(&new_thing)?;
@@ -28,7 +28,7 @@ pub fn add_thing(thing_input: ThingInput) -> ExternResult<EntryHash> {
         (),
     )?;
 
-    Ok(thing_entry_hash.clone())
+    Ok(Thing { name: new_thing.name.clone() })
 }
 
 #[hdk_extern]
