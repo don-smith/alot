@@ -3,6 +3,8 @@
 #
 .hc
 .cargo
+*.dna
+*.happ
 
 #
 # Rust
