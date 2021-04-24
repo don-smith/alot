@@ -1,6 +1,6 @@
-import { AppWebsocket, InstalledAppInfo } from "@holochain/conductor-api";
+import { AppWebsocket, CellId } from "@holochain/conductor-api";
 
-interface Thing {
+export interface Thing {
   name: string;
 }
 
@@ -13,9 +13,7 @@ export async function addNewThing(
   thingName: string,
   connection: AppWebsocket
 ): Promise<Thing> {
-  const appInfo = await getAppInfo(connection);
-  const cellId = appInfo.cell_data[0].cell_id;
-
+  const cellId = await getCellId(connection);
   const newThing = await connection.callZome({
     cap: null,
     cell_id: cellId,
@@ -28,9 +26,23 @@ export async function addNewThing(
   return newThing;
 }
 
-async function getAppInfo(connection: AppWebsocket): Promise<InstalledAppInfo> {
+export async function getAllThings(connection: AppWebsocket): Promise<Thing[]> {
+  const cellId = await getCellId(connection);
+  const things: Thing[] = await connection.callZome({
+    cap: null,
+    cell_id: cellId,
+    zome_name: "thing",
+    fn_name: "get_things_for_agent",
+    provenance: cellId[1],
+    payload: cellId[1],
+  });
+
+  return things;
+}
+
+async function getCellId(connection: AppWebsocket): Promise<CellId> {
   const appInfo = await connection.appInfo({
     installed_app_id: "alot-app",
   });
-  return appInfo;
+  return appInfo.cell_data[0].cell_id;
 }

@@ -30,7 +30,7 @@ aLoT is a [p2p](https://en.wikipedia.org/wiki/Peer-to-peer) application that use
     CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown
     hc dna pack workdir/dna
     hc app pack workdir/happ
-    hc sandbox generate --run=8888 --app-id=alot-app
+    hc sandbox generate workdir/happ/ --run=8888 --app-id=alot-app
     ```
 
 1. Navigate to [http://localhost:8080](http://localhost:8080) and click the button. You should be greeted with a friendly message.

@@ -10,15 +10,8 @@ pub struct Thing {
     name: String,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct ThingInput {
-    name: String,
-}
-
 #[hdk_extern]
-pub fn add_thing(thing_input: ThingInput) -> ExternResult<Thing> {
-    let new_thing = Thing { name: thing_input.name.clone() };
-
+pub fn add_thing(new_thing: Thing) -> ExternResult<Thing> {
     create_entry(&new_thing)?;
     let thing_entry_hash = hash_entry(&new_thing)?;
 
