@@ -1,28 +1,35 @@
 <template>
   <div class="hello">
-    <h1>Add a new thing</h1>
+    <h2>Add a new thing</h2>
     <form @submit="handleSubmit">
       <input type="text" name="name" v-model="vm.newThingName" />
       <button>Add</button>
     </form>
+    <h2>Things</h2>
     <div v-for="thing in vm.things" :key="thing.name">
-      <p>{{ thing.name }}</p>
+      <p>
+        <router-link
+          :to="{ name: 'Thing', params: { hash: thing.entry_hash } }"
+        >
+          {{ thing.thing_name }}
+        </router-link>
+      </p>
     </div>
-    <img v-if="vm.busy" src="/images/busy.gif" width="250" />
+    <img v-if="vm.busy" src="../assets/busy.gif" width="250" />
   </div>
 </template>
 
 <script lang="ts">
 import { reactive, defineComponent } from "vue";
-import { connect, addNewThing, getAllThings, Thing } from "../service";
+import { addNewThing, getAllThings, ThingElement } from "@/service";
 
 export default defineComponent({
-  name: "Thing",
+  name: "Things",
   setup() {
     let vm: {
       newThingName: string;
       busy: boolean;
-      things: Thing[];
+      things: ThingElement[];
     } = reactive({
       newThingName: "",
       busy: false,
@@ -32,8 +39,7 @@ export default defineComponent({
     async function handleSubmit(e: Event) {
       vm.busy = true;
       e.preventDefault();
-      const conn = await connect();
-      await addNewThing(vm.newThingName, conn);
+      await addNewThing(vm.newThingName);
       vm.newThingName = "";
       vm.busy = false;
       await getThings();
@@ -41,10 +47,9 @@ export default defineComponent({
 
     async function getThings(): Promise<void> {
       vm.busy = true;
-      const conn = await connect();
-      const things: Thing[] = await getAllThings(conn);
+      const things: ThingElement[] = await getAllThings();
       for (let thing of things) {
-        if (!vm.things.some((t) => t.name === thing.name)) {
+        if (!vm.things.some((t) => t.thing_name === thing.thing_name)) {
           vm.things.push({ ...thing });
         }
       }

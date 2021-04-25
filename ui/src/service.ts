@@ -4,6 +4,12 @@ export interface Thing {
   name: string;
 }
 
+export interface ThingElement {
+  thing_name: string;
+  header_hash: string;
+  entry_hash: string;
+}
+
 export async function connect(): Promise<AppWebsocket> {
   const conn = await AppWebsocket.connect("ws://localhost:8888");
   return conn;
@@ -11,10 +17,12 @@ export async function connect(): Promise<AppWebsocket> {
 
 export async function addNewThing(
   thingName: string,
-  connection: AppWebsocket
+  connection?: AppWebsocket
 ): Promise<Thing> {
-  const cellId = await getCellId(connection);
-  const newThing = await connection.callZome({
+  const conn = connection ? connection : await connect();
+  const cellId = await getCellId(conn);
+
+  const newThing = await conn.callZome({
     cap: null,
     cell_id: cellId,
     zome_name: "thing",
@@ -26,9 +34,13 @@ export async function addNewThing(
   return newThing;
 }
 
-export async function getAllThings(connection: AppWebsocket): Promise<Thing[]> {
-  const cellId = await getCellId(connection);
-  const things: Thing[] = await connection.callZome({
+export async function getAllThings(
+  connection?: AppWebsocket
+): Promise<ThingElement[]> {
+  const conn = connection ? connection : await connect();
+  const cellId = await getCellId(conn);
+
+  const things: ThingElement[] = await conn.callZome({
     cap: null,
     cell_id: cellId,
     zome_name: "thing",
@@ -37,6 +49,7 @@ export async function getAllThings(connection: AppWebsocket): Promise<Thing[]> {
     payload: cellId[1],
   });
 
+  // console.log("things:", JSON.stringify(things, null, 2));
   return things;
 }
 

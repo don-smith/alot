@@ -625,6 +625,7 @@ name = "thing"
 version = "0.0.1"
 dependencies = [
  "hdk",
+ "holo_hash",
  "serde",
 ]
 
