@@ -8,6 +8,7 @@
     <div v-for="thing in vm.things" :key="thing.name">
       <p>{{ thing.name }}</p>
     </div>
+    <img v-if="vm.busy" src="/images/busy.gif" width="250" />
   </div>
 </template>
 
@@ -18,20 +19,28 @@ import { connect, addNewThing, getAllThings, Thing } from "../service";
 export default defineComponent({
   name: "Thing",
   setup() {
-    let vm: { newThingName: string; things: Thing[] } = reactive({
+    let vm: {
+      newThingName: string;
+      busy: boolean;
+      things: Thing[];
+    } = reactive({
       newThingName: "",
+      busy: false,
       things: [],
     });
 
     async function handleSubmit(e: Event) {
+      vm.busy = true;
       e.preventDefault();
       const conn = await connect();
       await addNewThing(vm.newThingName, conn);
       vm.newThingName = "";
+      vm.busy = false;
       await getThings();
     }
 
     async function getThings(): Promise<void> {
+      vm.busy = true;
       const conn = await connect();
       const things: Thing[] = await getAllThings(conn);
       for (let thing of things) {
@@ -39,6 +48,7 @@ export default defineComponent({
           vm.things.push({ ...thing });
         }
       }
+      vm.busy = false;
     }
 
     getThings();

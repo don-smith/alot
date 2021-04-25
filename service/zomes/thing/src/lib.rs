@@ -5,6 +5,7 @@ use hdk::prelude::*;
 //
 entry_defs![Thing::entry_def()];
 
+//#[hdk_entry(id = "thing", visibility = "private")] // much slower
 #[hdk_entry(id = "thing")]
 pub struct Thing {
     name: String,
