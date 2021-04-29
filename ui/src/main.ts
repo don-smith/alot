@@ -3,6 +3,7 @@ import { Buffer } from "buffer";
 import { createApp } from "vue";
 
 import App from "@/App.vue";
+import store from "@/store";
 import router from "@/router";
 
 // This is a work-around until @holochain/conductor-api
@@ -11,7 +12,7 @@ import router from "@/router";
 const MainWindow = window as any;
 MainWindow.Buffer = Buffer;
 
-createApp(App).use(router).mount("#app");
+createApp(App).use(router).use(store).mount("#app");
 
 // if (process.env.NODE_ENV === "development") {
 //   devtools.connect([> host, port <]);

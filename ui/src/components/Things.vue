@@ -20,20 +20,22 @@
 </template>
 
 <script lang="ts">
+import { useStore } from "vuex";
 import { reactive, defineComponent } from "vue";
 import { addNewThing, getAllThings, ThingElement } from "@/service";
 
 export default defineComponent({
   name: "Things",
   setup() {
+    const store = useStore();
     let vm: {
       newThingName: string;
       busy: boolean;
       things: ThingElement[];
     } = reactive({
       newThingName: "",
-      busy: false,
-      things: [],
+      busy: store.state.busy,
+      things: store.state.things,
     });
 
     async function handleSubmit(e: Event) {
