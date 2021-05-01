@@ -7,11 +7,12 @@ import {
   useStore as baseUseStore,
 } from "vuex";
 
-import { addNewThing, getAllThings, ThingElement } from "@/service";
+import { addNewThing, getAllThings, getThing, ThingElement } from "@/service";
 
 export interface State {
   busy: boolean;
   things: ThingElement[];
+  activeThing?: ThingElement;
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -22,6 +23,7 @@ const options: StoreOptions<State> = {
   state: {
     busy: false,
     things: [],
+    activeThing: undefined,
   },
 
   mutations: {
@@ -29,8 +31,10 @@ const options: StoreOptions<State> = {
       state.busy = busy;
     },
     saveThings(state: State, things: ThingElement[]) {
-      console.log("things:", things);
       state.things = things;
+    },
+    makeActive(state: State, thing: ThingElement) {
+      state.activeThing = thing;
     },
   },
 
@@ -42,6 +46,10 @@ const options: StoreOptions<State> = {
     async getThings(context: ActionContext<State, State>) {
       const things: ThingElement[] = await getAllThings();
       context.commit("saveThings", things);
+    },
+    async getThing(context: ActionContext<State, State>, hash: string) {
+      const thing: ThingElement = await getThing(hash);
+      context.commit("makeActive", thing);
     },
   },
 };

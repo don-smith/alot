@@ -16,8 +16,8 @@
           </router-link>
         </p>
       </div>
-      <img v-if="busy" src="../assets/busy.gif" width="250" />
     </div>
+    <img v-if="busy" src="../assets/busy.gif" width="140" />
   </div>
 </template>
 
@@ -38,16 +38,18 @@ export default defineComponent({
     async function handleSubmit(e: Event) {
       store.commit("busy", true);
       e.preventDefault();
-      store.dispatch("addThing", newThingName.value);
+      store.dispatch("addThing", newThingName.value).then(() => {
+        store.commit("busy", false);
+        getThings();
+      });
       newThingName.value = "";
-      store.commit("busy", false);
-      await getThings();
     }
 
     async function getThings(): Promise<void> {
       store.commit("busy", true);
-      store.dispatch("getThings");
-      store.commit("busy", false);
+      store.dispatch("getThings").then(() => {
+        store.commit("busy", false);
+      });
     }
 
     getThings();

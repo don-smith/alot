@@ -53,6 +53,26 @@ export async function getAllThings(
   return things;
 }
 
+export async function getThing(
+  hash: string,
+  connection?: AppWebsocket
+): Promise<ThingElement> {
+  const conn = connection ? connection : await connect();
+  const cellId = await getCellId(conn);
+
+  const thing: ThingElement = await conn.callZome({
+    cap: null,
+    cell_id: cellId,
+    zome_name: "thing",
+    fn_name: "get_thing_by_hash",
+    provenance: cellId[1],
+    payload: hash,
+  });
+
+  // console.log("things:", JSON.stringify(things, null, 2));
+  return thing;
+}
+
 async function getCellId(connection: AppWebsocket): Promise<CellId> {
   const appInfo = await connection.appInfo({
     installed_app_id: "alot-app",
