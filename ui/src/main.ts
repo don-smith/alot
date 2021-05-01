@@ -3,8 +3,8 @@ import { Buffer } from "buffer";
 import { createApp } from "vue";
 
 import App from "@/App.vue";
-import store from "@/store";
 import router from "@/router";
+import { store, key } from "@/store";
 
 // This is a work-around until @holochain/conductor-api
 // sorts out its dependency on the Node.js buffer module
@@ -12,8 +12,4 @@ import router from "@/router";
 const MainWindow = window as any;
 MainWindow.Buffer = Buffer;
 
-createApp(App).use(router).use(store).mount("#app");
-
-// if (process.env.NODE_ENV === "development") {
-//   devtools.connect([> host, port <]);
-// }
+createApp(App).use(router).use(store, key).mount("#app");

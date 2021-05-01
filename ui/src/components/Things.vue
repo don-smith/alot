@@ -2,66 +2,60 @@
   <div class="hello">
     <h2>Add a new thing</h2>
     <form @submit="handleSubmit">
-      <input type="text" name="name" v-model="vm.newThingName" />
+      <input type="text" name="name" v-model="newThingName" />
       <button>Add</button>
     </form>
-    <h2>Things</h2>
-    <div v-for="thing in vm.things" :key="thing.name">
-      <p>
-        <router-link
-          :to="{ name: 'Thing', params: { hash: thing.entry_hash } }"
-        >
-          {{ thing.thing_name }}
-        </router-link>
-      </p>
+    <div v-if="things.length">
+      <h2>Things</h2>
+      <div v-for="thing in things" :key="thing.name">
+        <p>
+          <router-link
+            :to="{ name: 'Thing', params: { hash: thing.entry_hash } }"
+          >
+            {{ thing.thing_name }}
+          </router-link>
+        </p>
+      </div>
+      <img v-if="busy" src="../assets/busy.gif" width="250" />
     </div>
-    <img v-if="vm.busy" src="../assets/busy.gif" width="250" />
   </div>
 </template>
 
 <script lang="ts">
-import { useStore } from "vuex";
-import { reactive, defineComponent } from "vue";
-import { addNewThing, getAllThings, ThingElement } from "@/service";
+import { ref, computed, defineComponent } from "vue";
+import { useStore } from "@/store";
 
 export default defineComponent({
   name: "Things",
   setup() {
     const store = useStore();
-    let vm: {
-      newThingName: string;
-      busy: boolean;
-      things: ThingElement[];
-    } = reactive({
-      newThingName: "",
-      busy: store.state.busy,
-      things: store.state.things,
-    });
+    let newThingName = ref("");
+    let busy = computed(() => store.state.busy);
+    let things = computed(() => store.state.things);
+
+    store.commit("busy", true);
 
     async function handleSubmit(e: Event) {
-      vm.busy = true;
+      store.commit("busy", true);
       e.preventDefault();
-      await addNewThing(vm.newThingName);
-      vm.newThingName = "";
-      vm.busy = false;
+      store.dispatch("addThing", newThingName.value);
+      newThingName.value = "";
+      store.commit("busy", false);
       await getThings();
     }
 
     async function getThings(): Promise<void> {
-      vm.busy = true;
-      const things: ThingElement[] = await getAllThings();
-      for (let thing of things) {
-        if (!vm.things.some((t) => t.thing_name === thing.thing_name)) {
-          vm.things.push({ ...thing });
-        }
-      }
-      vm.busy = false;
+      store.commit("busy", true);
+      store.dispatch("getThings");
+      store.commit("busy", false);
     }
 
     getThings();
 
     return {
-      vm,
+      busy,
+      things,
+      newThingName,
       handleSubmit,
     };
   },
